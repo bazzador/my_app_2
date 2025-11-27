@@ -1,4 +1,4 @@
-package com.example.myapplication2
+package com.example.myapplication2.screen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.myapplication2.viewmodel.CounterViewModel
 
 @Composable
 fun CounterScreen(viewModel: CounterViewModel) {

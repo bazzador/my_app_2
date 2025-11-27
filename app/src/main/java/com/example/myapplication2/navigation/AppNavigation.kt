@@ -4,10 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.myapplication2.AccountComposeScreen
-import com.example.myapplication2.AccountScreen
-import com.example.myapplication2.CounterScreen
-import com.example.myapplication2.CounterViewModel
+import com.example.myapplication2.screen.AccountComposeScreen
+import com.example.myapplication2.screen.AccountScreen
+import com.example.myapplication2.screen.CounterScreen
+import com.example.myapplication2.viewmodel.CounterViewModel
 
 @Composable
 fun AppNavigation(

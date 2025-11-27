@@ -16,6 +16,7 @@ import com.example.myapplication2.navigation.AppNavigation
 import com.example.myapplication2.navigation.Destinations
 import com.example.myapplication2.navigation.mainScreens
 import com.example.myapplication2.ui.theme.MyApplication2Theme
+import com.example.myapplication2.viewmodel.CounterViewModel
 
 class MainActivity : ComponentActivity() {
 

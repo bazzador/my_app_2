@@ -1,4 +1,4 @@
-package com.example.myapplication2
+package com.example.myapplication2.screen
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
