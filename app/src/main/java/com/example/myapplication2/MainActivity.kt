@@ -16,25 +16,32 @@ import com.example.myapplication2.navigation.AppNavigation
 import com.example.myapplication2.navigation.Destinations
 import com.example.myapplication2.navigation.mainScreens
 import com.example.myapplication2.ui.theme.MyApplication2Theme
+import com.example.myapplication2.viewmodel.AppViewModel
 import com.example.myapplication2.viewmodel.CounterViewModel
 
 class MainActivity : ComponentActivity() {
 
     private val counterViewModel: CounterViewModel by viewModels()
-
+    private val appViewModel: AppViewModel by viewModels {
+        AppViewModel.AppViewModelFactory(
+            (application as MyApplication).userRepository,
+            (application as MyApplication).subscriptionLevelRepository
+        )
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             MyApplication2Theme {
-                MyApplication2App(counterViewModel)
+                MyApplication2App(counterViewModel, appViewModel)
             }
         }
     }
 }
 
 @Composable
-fun MyApplication2App(counterViewModel: CounterViewModel) {
+fun MyApplication2App(counterViewModel: CounterViewModel,
+                      appViewModel: AppViewModel) {
     val navController = rememberNavController()
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route ?: Destinations.Account.route
@@ -56,6 +63,6 @@ fun MyApplication2App(counterViewModel: CounterViewModel) {
             }
         }
     ) {
-        AppNavigation(navController, counterViewModel)
+        AppNavigation(navController, counterViewModel, appViewModel)
     }
 }

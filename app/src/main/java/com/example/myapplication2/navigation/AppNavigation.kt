@@ -7,16 +7,19 @@ import androidx.navigation.compose.composable
 import com.example.myapplication2.screen.AccountComposeScreen
 import com.example.myapplication2.screen.AccountScreen
 import com.example.myapplication2.screen.CounterScreen
+import com.example.myapplication2.screen.MyApplicationScreen
+import com.example.myapplication2.viewmodel.AppViewModel
 import com.example.myapplication2.viewmodel.CounterViewModel
 
 @Composable
 fun AppNavigation(
     navController : NavHostController,
-    counterViewModel: CounterViewModel
+    counterViewModel: CounterViewModel,
+    appViewModel: AppViewModel
 ) {
     NavHost(
         navController = navController,
-        startDestination = Destinations.Account.route
+        startDestination = Destinations.MyApp.route
     ) {
         composable(Destinations.Account.route) {
             AccountScreen(
@@ -36,6 +39,10 @@ fun AppNavigation(
 
         composable(Destinations.Counter.route) {
             CounterScreen(counterViewModel)
+        }
+
+        composable(Destinations.MyApp.route) {
+            MyApplicationScreen(appViewModel)
         }
     }
 }
