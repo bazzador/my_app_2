@@ -12,4 +12,10 @@ class SubscriptionLevelRepository(private var subscriptionLevelDao: Subscription
     suspend fun insert(subscriptionLevel: SubscriptionLevel) {
         subscriptionLevelDao.insert(subscriptionLevel)
     }
+    suspend fun update(subscriptionLevel: SubscriptionLevel) {
+        subscriptionLevelDao.update(subscriptionLevel)
+    }
+    suspend fun delete(subscriptionLevel: SubscriptionLevel) {
+        subscriptionLevelDao.delete(subscriptionLevel)
+    }
 }

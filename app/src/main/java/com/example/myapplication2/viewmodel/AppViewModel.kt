@@ -23,6 +23,10 @@ class AppViewModel (
     fun update(user: User) = viewModelScope.launch { userRepository.update(user) }
     fun delete(user: User) = viewModelScope.launch { userRepository.delete(user) }
 
+    fun update(subscriptionLevel: SubscriptionLevel) = viewModelScope.launch { subscriptionLevelRepository.update(subscriptionLevel) }
+    fun insert(subscriptionLevel: SubscriptionLevel) = viewModelScope.launch { subscriptionLevelRepository.insert(subscriptionLevel) }
+    fun delete(subscriptionLevel: SubscriptionLevel) = viewModelScope.launch { subscriptionLevelRepository.delete(subscriptionLevel) }
+
     class AppViewModelFactory(
         private val userRepository: UserRepository,
         private val subscriptionLevelRepository: SubscriptionLevelRepository

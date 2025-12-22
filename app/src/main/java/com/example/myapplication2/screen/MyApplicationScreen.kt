@@ -36,12 +36,18 @@ fun MyApplicationScreen(viewModel: AppViewModel) {
     val users by viewModel.allUsers.observeAsState(emptyList())
     val subscriptionLevels by viewModel.allSubscriptionLevels.observeAsState(emptyList())
     var showAddDialog by remember { mutableStateOf(false) }
+    var showAddDialogSubscriptionLevel by remember { mutableStateOf(false) }
     var editUser by remember { mutableStateOf<User?>(null) }
+    var editSubscriptionLevel by remember { mutableStateOf<SubscriptionLevel?>(null) }
 
     Column(modifier = Modifier.padding(25.dp)) {
         Button(onClick = { showAddDialog = true }) {
             Text("Додати користувача")
         }
+        Button(onClick = { showAddDialogSubscriptionLevel = true }) {
+            Text("Додати рівень підписки")
+        }
+
         Spacer(modifier = Modifier.height(20.dp))
 
         users.forEach { user ->
@@ -76,9 +82,40 @@ fun MyApplicationScreen(viewModel: AppViewModel) {
                 }
             }
         }
+        subscriptionLevels.forEach {subscriptionLevel ->
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+            ){
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ){
+                    Column {
+                        Text(subscriptionLevel.name)
+                    }
+                    Row {
+                        Button(onClick = { editSubscriptionLevel = SubscriptionLevel(subscriptionLevel.id, subscriptionLevel.name) }) {
+                            Text("Змінити")
+                        }
+                        Button(onClick = {
+                            viewModel.allSubscriptionLevels.value?.firstOrNull { it.id == subscriptionLevel.id }?.let {
+                                viewModel.delete(SubscriptionLevel(subscriptionLevel.id, subscriptionLevel.name))
+                            }
+                        }) {
+                            Text("Видалити")
+                        }
+                    }
+                }
+
+            }
+        }
     }
 
-    if (showAddDialog && subscriptionLevels.isNotEmpty()) {
+    if (showAddDialog) {
         UserDialog(
             subscriptionLevels = subscriptionLevels,
             onDismiss = { showAddDialog = false },
@@ -100,6 +137,29 @@ fun MyApplicationScreen(viewModel: AppViewModel) {
             }
         )
     }
+
+    if (showAddDialogSubscriptionLevel) {
+        SubscriptionLevelDialog(
+            onDismiss = { showAddDialogSubscriptionLevel = false },
+            onSave = { name ->
+                viewModel.insert(SubscriptionLevel(0, name))
+                showAddDialogSubscriptionLevel = false
+            }
+        )
+    }
+
+    editSubscriptionLevel?.let { subscriptionLevel ->
+        SubscriptionLevelDialog(
+            initialSubscriptionLevel = subscriptionLevel,
+            onDismiss = { editSubscriptionLevel = null },
+            onSave = { name ->
+                viewModel.update(
+                    SubscriptionLevel(subscriptionLevel.id, name)
+                )
+                editSubscriptionLevel = null
+            }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -110,6 +170,11 @@ fun UserDialog(
     onDismiss: () -> Unit,
     onSave: (nickname: String, daysOfSubscription: String, subscriptionLevelId: Int) -> Unit
 ) {
+    if (subscriptionLevels.isEmpty()) {
+        Text("Спочатку додайте хоча б один рівень підписки")
+        return
+    }
+
     var nickname by remember { mutableStateOf(initialUser?.nickname ?: "") }
     var daysOfSubscription by remember { mutableStateOf(initialUser?.daysOfSubscription?.toString() ?: "") }
     var selectedSubscriptionLevel by remember(subscriptionLevels) {
@@ -184,6 +249,49 @@ fun UserDialog(
                     }
             ) { Text("Зберегти") }
         },
+        dismissButton = {
+            Button(onClick = onDismiss) { Text("Скасувати") }
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SubscriptionLevelDialog(
+    initialSubscriptionLevel: SubscriptionLevel? = null,
+    onDismiss: () -> Unit,
+    onSave: (name: String) -> Unit
+) {
+    var name by remember { mutableStateOf(initialSubscriptionLevel?.name ?: "") }
+
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = { Text(if (initialSubscriptionLevel== null) "Додати рівень підписки" else "Змінити рівень підписки") },
+        text = {
+            Column {
+                OutlinedTextField(
+                    value = name,
+                    onValueChange = { name = it },
+                    label = { Text("Назва") },
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+            }
+        },
+        confirmButton = {
+            Button(
+                onClick = {
+                    if (name.isNotBlank()) {
+                        onSave(name)
+                        onDismiss()
+                    }
+                }
+            ) {
+                Text("Зберегти")
+            }
+        }
+        ,
         dismissButton = {
             Button(onClick = onDismiss) { Text("Скасувати") }
         }
